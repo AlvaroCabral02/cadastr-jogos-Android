@@ -11,7 +11,7 @@ class JogoAdapter (
     private var lista: List<Jogo>,
     private val onEditClick: (Jogo) -> Unit,
     private val onDeleteClick: (Jogo) -> Unit
-) : RecyclerView.Adapter<JogoAdapter.JogoViewHolder>() {
+) : RecyclerView.Adapter<JogoAdapter.JogoViewHolder>() {//colchetes do Recycler
 
     class JogoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtTitulo: TextView = itemView.findViewById(R.id.txtTitulo)
@@ -29,8 +29,8 @@ class JogoAdapter (
         val jogo = lista[position]
         holder.txtTitulo.text = jogo.titulo
         holder.txtPlataforma.text = "${jogo.plataforma} (${jogo.anoLancamento})"
-        holder.itemView.setOnClickListener {onEditClick(jogo)}//aviso de ediçãom do jogo
-        holder.btnDeletar.setOnClickListener {onDeleteClick(jogo)}//avisar que vai deletar o jogo
+        holder.itemView.setOnClickListener { onEditClick(jogo) }//aviso de ediçãom do jogo
+        holder.btnDeletar.setOnClickListener { onDeleteClick(jogo)}//avisar que vai deletar o jogo
     }
 
     override fun getItemCount(): Int = lista.size
@@ -40,4 +40,6 @@ class JogoAdapter (
         notifyDataSetChanged()
     }
 
-}//colchetes do Recycler
+    fun atualizarLista(listarTodos: kotlin.collections.List<com.example.cadastrodejogossoma1.Jogo>) {}
+
+}
