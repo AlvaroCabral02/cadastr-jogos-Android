@@ -18,8 +18,14 @@ object JogoRepository {
         return listaJogos
     }
 
-    fun edita(jogoAtualizado)
+    fun editar(jogoAtualizado: Jogo) {
+        val index = listaJogos.indexOfFirst { it.id == jogoAtualizado.id}
+        if (index != -1){
+            listaJogos[index] = jogoAtualizado
+        }
+    }
 
-
-
+    fun remover (id: Int) {
+        listaJogos.removeAll { it.id == id}
+    }
 }//colchetes final
