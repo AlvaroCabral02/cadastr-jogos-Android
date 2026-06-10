@@ -29,8 +29,14 @@ class JogoAdapter (
         val jogo = lista[position]
         holder.txtTitulo.text = jogo.titulo
         holder.txtPlataforma.text = "${jogo.plataforma} (${jogo.anoLancamento})"
-        holder.itemView.setOnClickListener { onEditClick(jogo) }//aviso de ediçãom do jogo
-        holder.btnDeletar.setOnClickListener { onDeleteClick(jogo)}//avisar que vai deletar o jogo
+
+        // Clique na linha inteira para Editar
+        holder.itemView.setOnClickListener { onEditClick(jogo) }
+
+        // CRUCIAL: Clique na lixeira para Deletar
+        holder.btnDeletar.setOnClickListener {
+            onDeleteClick(jogo)
+        }
     }
 
     override fun getItemCount(): Int = lista.size
@@ -40,6 +46,9 @@ class JogoAdapter (
         notifyDataSetChanged()
     }
 
-    fun atualizarLista(listarTodos: kotlin.collections.List<com.example.cadastrodejogossoma1.Jogo>) {}
-
+    fun atualizarLista(novaLista: List<Jogo>) {
+        this.lista = novaLista
+        // ESTA LINHA É CRUCIAL: Ela força o RecyclerView a se redesenhar na hora!
+        notifyDataSetChanged()
+    }
 }

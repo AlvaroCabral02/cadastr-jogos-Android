@@ -34,7 +34,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             },
             onDeleteClick = { jogo ->
+                // 1. Remove do "banco de dados" interno
                 JogoRepository.remover(jogo.id)
+
+                // 2. Força o Adapter a reler a lista atualizada para sumir com o item na hora
                 jogoAdapter.atualizarLista(JogoRepository.listarTodos())
             }
         )
