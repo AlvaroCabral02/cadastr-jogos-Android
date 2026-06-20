@@ -30,10 +30,10 @@ class JogoAdapter (
         holder.txtTitulo.text = jogo.titulo
         holder.txtPlataforma.text = "${jogo.plataforma} (${jogo.anoLancamento})"
 
-        // Clique na linha inteira para Editar
+        // Clique da linha inteira para Editar
         holder.itemView.setOnClickListener { onEditClick(jogo) }
 
-        // CRUCIAL: Clique na lixeira para Deletar
+        // Clique da lixeira para Deletar
         holder.btnDeletar.setOnClickListener {
             onDeleteClick(jogo)
         }
@@ -48,7 +48,7 @@ class JogoAdapter (
 
     fun atualizarLista(novaLista: List<Jogo>) {
         this.lista = novaLista
-        // ESTA LINHA É CRUCIAL: Ela força o RecyclerView a se redesenhar na hora!
+        // froça o recycler!
         notifyDataSetChanged()
     }
 }
