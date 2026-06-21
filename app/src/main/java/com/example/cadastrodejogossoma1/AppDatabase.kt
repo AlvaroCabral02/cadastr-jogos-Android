@@ -5,5 +5,5 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Artesanato::class], version = 1)
 abstract class AppDatabase : RoomDatabase (){
-    abstract fun artesenatoDao(): ArtesanatoDao
+    abstract fun artesanatoDao(): ArtesanatoDao
 }
