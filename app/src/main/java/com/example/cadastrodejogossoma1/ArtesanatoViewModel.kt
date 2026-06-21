@@ -1,53 +1,55 @@
 package com.example.cadastrodejogossoma1
 
+import android.content.ContentValues
+import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class ArtesanatoViewModel : ViewModel() {
 
-    private lateinit var dao: ArtesanatoDao
-
-    // Uma lista observável pelo Jetpack Compose. Quando mudamos essa lista, a tela atualiza na hora!
+    private lateinit var dbHelper: AppDatabase
     val listaEstoque = mutableStateListOf<Artesanato>()
 
-    fun setDao(artesanatoDao: ArtesanatoDao) {
-        this.dao = artesanatoDao
+    fun inicializarBanco(context: Context) {
+        dbHelper = AppDatabase(context)
         carregarItens()
     }
 
-    // O Room exige que buscas e gravações rodem fora da linha principal do app (em segundo plano)
-    // por isso usamos o "viewModelScope.launch(Dispatchers.IO)"
     fun carregarItens() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val itens = dao.listarTodos()
-            viewModelScope.launch(Dispatchers.Main) {
-                listaEstoque.clear()
-                listaEstoque.addAll(itens)
-            }
+        listaEstoque.clear()
+        val db = dbHelper.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM tabela_artesanato", null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val nome = cursor.getString(cursor.getColumnIndexOrThrow("nome"))
+                val tipo = cursor.getString(cursor.getColumnIndexOrThrow("tipo"))
+                val preco = cursor.getDouble(cursor.getColumnIndexOrThrow("preco"))
+
+                listaEstoque.add(Artesanato(id, nome, tipo, preco))
+            } while (cursor.moveToNext())
         }
+        cursor.close()
+        db.close()
     }
 
     fun adicionarItem(artesanato: Artesanato) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.inserir(artesanato)
-            carregarItens() // Atualiza a lista na tela
+        val db = dbHelper.writableDatabase
+        val valores = ContentValues().apply {
+            put("nome", artesanato.nome)
+            put("tipo", artesanato.tipo)
+            put("preco", artesanato.preco)
         }
-    }
-
-    fun editarItem(artesanato: Artesanato) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.editar(artesanato)
-            carregarItens()
-        }
+        db.insert("tabela_artesanato", null, valores)
+        db.close()
+        carregarItens() // Atualiza a tela na hora
     }
 
     fun deletarItem(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.deletarPorId(id)
-            carregarItens()
-        }
+        val db = dbHelper.writableDatabase
+        db.delete("tabela_artesanato", "id = ?", arrayOf(id.toString()))
+        db.close()
+        carregarItens() // Atualiza a tela na hora
     }
 }

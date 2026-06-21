@@ -15,25 +15,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.room.Room
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //inicio do banco de dados
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "banco_artesanatos"
-        ).fallbackToDestructiveMigration()
-            .build()
-
         setContent {
             val viewModel: ArtesanatoViewModel by viewModels()
-            viewModel.setDao(db.artesanatoDao())
 
-            //render da Tela Principal
+            //inicia o banco de dados
+            viewModel.inicializarBanco(applicationContext)
+
             TelaEstoqueArtesanato(viewModel)
         }
     }
@@ -60,7 +55,7 @@ fun TelaEstoqueArtesanato(viewModel: ArtesanatoViewModel) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            //formulario de cadastro e edicao ---
+            //formulario de cadastro e edicao
             Text(text = "Cadastrar Novo Item", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
 

@@ -1,9 +1,24 @@
 package com.example.cadastrodejogossoma1
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 
-@Database(entities = [Artesanato::class], version = 1)
-abstract class AppDatabase : RoomDatabase (){
-    abstract fun artesanatoDao(): ArtesanatoDao
+class AppDatabase(context: Context) : SQLiteOpenHelper(context, "banco_artesanatos.db", null, 1) {
+
+    override fun onCreate(db: SQLiteDatabase) {
+        // cria a tabela apartir do SQL
+        db.execSQL(
+            "CREATE TABLE tabela_artesanato (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "nome TEXT, " +
+                    "tipo TEXT, " +
+                    "preco REAL)"
+        )
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS tabela_artesanato")
+        onCreate(db)
+    }
 }
